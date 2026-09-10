@@ -1,0 +1,19 @@
+services:
+  gateway:
+    build: .
+    image: mini-llm-gateway:0.1.0
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # 允许在不重建镜像的情况下调整模型白名单与 Prompt Bundle
+      - ./config:/app/config:ro
+      - ./prompts:/app/prompts:ro
+    # compose 层健康检查：docker / podman 均生效（镜像内 HEALTHCHECK 在 podman OCI 格式下会被忽略）
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').status==200 else 1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
