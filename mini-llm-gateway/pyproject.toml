@@ -1,0 +1,58 @@
+[project]
+name = "mini-llm-gateway"
+version = "0.1.0"
+description = "可配置、可部署、可治理的 LLM Gateway（week01 1-7 课程练习：从单文件工程化到服务）"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110,<1.0",
+    "uvicorn[standard]>=0.27,<1.0",
+    "httpx>=0.27,<1.0",
+    "pydantic>=2.0,<3.0",
+    "jsonschema>=4.0,<5.0",
+    "pyyaml>=6.0,<7.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23",
+]
+dev = [
+    "ruff>=0.4",
+    "mypy>=1.8",
+    "types-PyYAML",
+    "types-jsonschema",
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mini_llm_gateway*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = false
+disallow_untyped_decorators = false
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["jsonschema.*"]
+ignore_missing_imports = true
